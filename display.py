@@ -8,21 +8,37 @@ def plot_velocity_map(vel_map, vmin=-300, vmax=300, cb_label="Velocity (m/s)", t
     plt.title(title)
     plt.show()
 
-def plot_example_spectra(flux, wave, n=1, title='Example Spectra'):
+import matplotlib.pyplot as plt
+import random
 
-    _, xmax, ymax = flux.shape
+def plot_example_spectra(flux, wave, n=1, title='Example Spectra', co_ords=None, xmin=None, xmax=None):
+    _, xdim, ydim = flux.shape
 
     plt.figure(figsize=(10, 5))
     plt.xlabel('Wavelength (Angstroms)')
     plt.ylabel('Flux')
 
-    for _ in range(5):
-        x = random.randint(0, xmax - 1)
-        y = random.randint(0, ymax - 1)
-        spectrum = flux[:, x, y]
-        plt.plot(wave, spectrum)
+    # Mask wave range
+    wave_mask = slice(None)
+    if xmin is not None or xmax is not None:
+        wave_mask = (wave >= (xmin if xmin is not None else wave.min())) & (wave <= (xmax if xmax is not None else wave.max()))
+
+    if co_ords is not None:
+        x, y = co_ords
+        spectrum = flux[:, x, y][wave_mask]
+        plt.plot(wave[wave_mask], spectrum, label=f'Spectrum at ({x}, {y})')
+        plt.legend()
+    else:
+        for _ in range(n):
+            x = random.randint(0, xdim - 1)
+            y = random.randint(0, ydim - 1)
+            spectrum = flux[:, x, y][wave_mask]
+            plt.plot(wave[wave_mask], spectrum)
+
     plt.title(title)
+    plt.xlim(xmin, xmax)
     plt.show()
+
 
 def plot_rgb_image(
         flux, 
