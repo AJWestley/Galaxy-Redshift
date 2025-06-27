@@ -26,6 +26,8 @@ def cube_fit_Halpha(flux, wave, window_centre=6562.8, ws=40, threshold=0.1, std=
 def fit_Halpha(x, y, flux, wave, ws=40, threshold=0.1, window_centre=6562.8, std=0.5):
     peak_flux = wave[flux[:, y, x].argmax()]
 
+    lambda_rest = 6562.8
+
     bounds = (
         [0, peak_flux-10, 0.1, -np.inf],  # min values
         [np.inf, peak_flux+10, 3, np.inf]  # max sigma = 3 Å ~ 130 km/s
@@ -42,7 +44,7 @@ def fit_Halpha(x, y, flux, wave, ws=40, threshold=0.1, window_centre=6562.8, std
         p0 = [flux_cut.max(), window_centre, std, np.median(flux_cut)]
         popt, _ = curve_fit(gaussian, wave_cut, flux_cut, p0=p0, bounds=bounds)
         lambda_obs = popt[1]
-        velocity = c.to(u.km / u.s).value * (lambda_obs - window_centre) / window_centre
+        velocity = c.to(u.km / u.s).value * (lambda_obs - lambda_rest) / lambda_rest
     except:
         raise RuntimeError("Curve fitting failed for the spectrum at coordinates ({}, {}).".format(y, x))
     return velocity, flux_cut, wave_cut, popt
