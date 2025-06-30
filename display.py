@@ -8,9 +8,6 @@ def plot_velocity_map(vel_map, vmin=-300, vmax=300, cb_label="Velocity (m/s)", t
     plt.title(title)
     plt.show()
 
-import matplotlib.pyplot as plt
-import random
-
 def plot_example_spectra(flux, wave, n=1, title='Example Spectra', co_ords=None, xmin=None, xmax=None):
     _, xdim, ydim = flux.shape
 
@@ -38,7 +35,6 @@ def plot_example_spectra(flux, wave, n=1, title='Example Spectra', co_ords=None,
     plt.title(title)
     plt.xlim(xmin, xmax)
     plt.show()
-
 
 def plot_rgb_image(
         flux, 
