@@ -6,6 +6,7 @@ class EmissionLines:
     # Hydrogen
     H_ALPHA = (6562.8,)
     H_BETA = (4861.3,)
+    H_GAMMA = (4340.5,)
 
     # Helium
     HE_I = (5875.6,)

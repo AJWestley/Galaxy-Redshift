@@ -57,7 +57,8 @@ def fit_element(x, y, flux, wave, ws=40, threshold=0.1, window_centre=6562.8, la
     return velocity, flux_cut, wave_cut, z, popt
 
 def has_peak(spectrum, threshold=0.1):
-    return np.any(spectrum > threshold)
+    zeroed_spectrum = spectrum - np.nanmin(spectrum)
+    return np.any(zeroed_spectrum > threshold)
 
 def gaussian(w, amp, mu, sigma, offset):
     return offset + amp * np.exp(-(w - mu)**2 / (2 * sigma**2))
