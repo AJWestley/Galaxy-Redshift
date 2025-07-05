@@ -132,8 +132,8 @@ def fit_element(x, y, flux, wave, ws=40, threshold=0.1, window_centre=6562.8, la
     peak_flux = wave_cut[flux_cut.argmax()]
 
     bounds = (
-        [0, peak_flux-10, 0.1, -np.inf],
-        [np.inf, peak_flux+10, 3, np.inf]
+        [0, peak_flux-ws, 0.1, -np.inf],
+        [np.inf, peak_flux+ws, 3, np.inf]
     )
 
     if not has_peak(flux_cut, threshold=threshold): 
@@ -143,7 +143,7 @@ def fit_element(x, y, flux, wave, ws=40, threshold=0.1, window_centre=6562.8, la
         raise ValueError("All values in the spectrum are NaN, skipping this spaxel.")
 
     try:
-        p0 = [flux_cut.max(), window_centre, std, np.median(flux_cut)]
+        p0 = [flux_cut.max(), peak_flux, std, np.median(flux_cut)]
         popt, _ = curve_fit(gaussian, wave_cut, flux_cut, p0=p0, bounds=bounds)
         lambda_obs = popt[1]
         z = lambda_obs / lambda_rest - 1
@@ -171,7 +171,7 @@ def has_peak(spectrum, threshold=0.1):
     bool
         True if the spectrum has a significant peak above the threshold, False otherwise.
     '''
-    zeroed_spectrum = spectrum - np.nanmin(spectrum)
+    zeroed_spectrum = spectrum - max(np.nanmin(spectrum), 0)
     return np.any(zeroed_spectrum > threshold)
 
 def gaussian(w, amp, mu, sigma, offset):
